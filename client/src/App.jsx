@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PromptForm from './components/PromptForm';
 import ResultCard from './components/ResultCard';
 import ImageCarousel from './components/ImageCarousel';
@@ -7,52 +7,30 @@ import FeaturesSection from './components/FeaturesSection';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollIndicator from './components/ScrollIndicator';
+import { STYLES, buildPrompt } from './utils/promptUtils';
 
 function App() {
   const [prompt, setPrompt] = useState('');
-  const [styles, setStyles] = useState([]);
+  const [styles, setStyles] = useState(STYLES);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Fetch styles registry
-    console.log('Fetching styles...');
-    fetch('/api/styles')
-      .then(res => {
-        console.log('Styles response:', res);
-        return res.json();
-      })
-      .then(data => {
-        console.log('Styles data received:', data);
-        setStyles(data);
-      })
-      .catch(err => console.error('Failed to load styles:', err));
-  }, []);
 
   const handleGenerate = async (formula) => {
     setIsLoading(true);
     setError(null);
-    setPrompt(''); // Clear previous prompt to disable visualizer
+    setPrompt('');
     
     try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formula),
-      });
-
-      const data = await response.json();
+      // Use local deterministic logic instead of backend call
+      const generatedPrompt = buildPrompt(formula);
       
-      if (response.ok) {
-        setPrompt(data.prompt);
-      } else {
-        setError(data.error || 'Failed to generate prompt');
-      }
+      // Simulate slight processing for UX
+      await new Promise(resolve => setTimeout(resolve, 600));
+      
+      setPrompt(generatedPrompt);
     } catch (error) {
       console.error('Error:', error);
-      setError('Network error, please try again.');
+      setError('Failed to generate prompt.');
     } finally {
       setIsLoading(false);
     }
