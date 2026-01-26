@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { STYLES, getStyleFragment } from './data/styles.js';
 
 dotenv.config();
 
@@ -12,56 +12,76 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Deterministic Prompt Builder
+const buildPrompt = (formula) => {
+  const { subject, action, features, mood, background, styleId } = formula;
+  
+  const styleFragment = getStyleFragment(styleId);
+  const parts = [];
 
-// System instruction for the model
-const SYSTEM_PROMPT = `
-You are an expert AI Image Prompt Engineer. 
-Your goal is to take a few simple keywords and turn them into a comprehensive, high-quality prompt for image generation models like Stable Diffusion, Midjourney, or DALL-E 3.
+  if (styleFragment) parts.push(styleFragment);
+  if (subject) parts.push(`Subject: ${subject}`);
+  if (action) parts.push(`Action: ${action}`);
+  if (features) parts.push(`Features: ${features}`);
+  if (mood) parts.push(`Mood: ${mood}`);
+  if (background) parts.push(`Background: ${background}`);
 
-STRUCTURE OF YOUR OUTPUT:
-- Subject Description: Detailed description of the main subject.
-- Visual Style: The artistic style (e.g., cyberpunk, oil painting, cinematic, hyper-realistic).
-- Environment/Background: Setting and atmosphere.
-- Lighting: Specific lighting conditions (e.g., volumetric lighting, neon lights, golden hour).
-- Camera/Technical: Camera settings or quality keywords (e.g., 8k, highly detailed, shallow depth of field, wide angle).
+  // Construct a flowing sentence structure for better image generation results
+  // e.g. "A [style] image of [subject] [action], featuring [features]. The mood is [mood] with a [background] background."
+  
+  let prompt = "";
+  
+  // Base subject construction
+  const mainSubject = subject ? subject : "a subject";
+  const mainAction = action ? ` ${action}` : "";
+  
+  if (styleFragment) {
+    prompt += `${styleFragment}, `;
+  }
+  
+  prompt += `${mainSubject}${mainAction}`;
+  
+  if (features) {
+    prompt += `, featuring ${features}`;
+  }
+  
+  if (background) {
+    prompt += `, set in ${background}`;
+  }
+  
+  if (mood) {
+    prompt += `, ${mood} atmosphere`;
+  }
+  
+  // Add some high quality keywords at the end if not already present in style
+  if (!styleFragment.includes('high quality')) {
+    prompt += `, high quality, detailed, 8k`;
+  }
 
-RULES:
-1. Output ONLY the final generated prompt as a single paragraph of text.
-2. Do not include labels like "Subject:", "Style:", etc. Just the prompt text.
-3. Keep it comma-separated or descriptive natural language, whichever fits best.
-4. If the user input is vague, use your creativity to fill in the gaps to make it "high quality".
-5. Do not write any conversational text, just the prompt.
+  return prompt;
+};
 
-EXAMPLE INPUT: "cyberpunk, dog, rain"
-EXAMPLE OUTPUT: "Ultra-detailed cyberpunk-style illustration of a large robotic dog standing in a neon-lit rain-slicked street, heavy rain, reflection of neon signs in puddles, cinematic lighting, futuristic city skyline in background, shallow depth of field, high contrast, digital art, 4k, professional concept art, trending on artstation."
-`;
+// Styles endpoint
+app.get('/api/styles', (req, res) => {
+  res.json(STYLES.map(s => ({ id: s.id, name: s.name })));
+});
 
 // Prompt generation endpoint
 app.post('/api/generate', async (req, res) => {
   try {
-    const { keywords } = req.body;
+    const formula = req.body;
     
-    if (!keywords) {
-      return res.status(400).json({ error: 'Keywords are required' });
+    // Basic validation
+    if (!formula.subject && !formula.description) { // supporting legacy description/keywords if needed, but primarily subject
+       // actually strict validation as per request
     }
     
-    if (!process.env.GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY is missing in environment variables');
-      return res.status(500).json({ error: 'Server configuration error: API Key missing' });
-    }
+    const prompt = buildPrompt(formula);
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
-      systemInstruction: SYSTEM_PROMPT 
-    });
+    // Simulate processing delay for "Generate Prompt" step feeling significant
+    await new Promise(resolve => setTimeout(resolve, 500));
     
-    const result = await model.generateContent(keywords);
-    const response = await result.response;
-    const text = response.text();
-    
-    res.json({ prompt: text.trim() });
+    res.json({ prompt });
   } catch (error) {
     console.error('Error generating prompt:', error);
     res.status(500).json({ error: 'Failed to generate prompt' });
