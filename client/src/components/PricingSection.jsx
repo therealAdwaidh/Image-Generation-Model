@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
 
 const PricingSection = () => {
   const plans = [
@@ -57,15 +59,44 @@ const PricingSection = () => {
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.2 } 
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: "easeOut" } 
+    }
+  };
+
   return (
     <section className="pricing-section">
-      <div className="pricing-container">
+      <motion.div 
+        className="pricing-container"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+      >
         {plans.map((plan, index) => (
-          <div 
+          <motion.div 
             key={index} 
+            variants={cardVariants}
+            whileHover={{ y: -10, scale: plan.isPopular ? 1.05 : 1.02, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)' }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className={`pricing-card ${plan.dark ? 'card-dark' : 'card-light'} ${plan.isPopular ? 'popular' : ''}`}
+            style={{ 
+              ...(plan.isPopular ? { boxShadow: '0 0 30px rgba(16, 185, 129, 0.3)', border: '1px solid rgba(16, 185, 129, 0.5)' } : {})
+            }}
           >
-            {plan.isPopular && <div className="badge">Best Value</div>}
+            {plan.isPopular && <div className="badge" style={{ background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)', boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)' }}>Best Value</div>}
             <div className="card-header">
               <h2 className="plan-name">{plan.name}</h2>
               <p className="plan-description">{plan.description}</p>
@@ -80,26 +111,35 @@ const PricingSection = () => {
               <p className="credits-text">{plan.credits}</p>
             </div>
             
-            <button className={`cta-btn ${plan.dark ? 'btn-outline' : 'btn-solid'}`}>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`cta-btn ${plan.dark ? 'btn-outline' : 'btn-solid'}`}
+            >
               Get Started
-            </button>
+            </motion.button>
             
             <div className="features-section">
               <h3 className="features-title">What's included</h3>
               <ul className="features-list">
                 {plan.features.map((feature, fIndex) => (
-                  <li key={fIndex} className="feature-item">
-                    <svg className="check-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                  <motion.li 
+                    key={fIndex} 
+                    className="feature-item"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 * fIndex, duration: 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    <Check size={18} className="check-icon" style={{ color: plan.dark ? '#10b981' : '#06b6d4', flexShrink: 0 }} />
                     <span>{feature}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -14,10 +14,10 @@ const Footer = () => {
                   <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span className="logo-text">Imaginator</span>
+              <span className="logo-text">AdCreative Engine</span>
             </div>
             <p className="brand-pitch">
-              The world's most advanced AI image generator. Transform your creative vision into reality with cutting-edge models.
+              The premier deterministic prompt engine for high-converting marketing visuals and ad creatives.
             </p>
             <div className="social-links">
               <a href="#" className="social-icon">𝕏</a>
@@ -30,8 +30,8 @@ const Footer = () => {
             <div className="link-column">
               <h4 className="column-title">Product</h4>
               <a href="#" className="footer-link">AI Models</a>
-              <a href="#" className="footer-link">Text to Image</a>
-              <a href="#" className="footer-link">Image to Image</a>
+              <a href="#" className="footer-link">Product Backdrops</a>
+              <a href="#" className="footer-link">Ad Creatives</a>
               <a href="#" className="footer-link">Pricing</a>
             </div>
             <div className="link-column">
@@ -52,7 +52,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-bottom">
-          <p className="copyright">© 2026 Imaginator AI. All rights reserved.</p>
+          <p className="copyright">© 2026 AdCreative Engine. All rights reserved.</p>
           <div className="bottom-links">
             <a href="#" className="bottom-link">Privacy Policy</a>
             <a href="#" className="bottom-link">Terms of Service</a>

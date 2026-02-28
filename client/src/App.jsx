@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import PromptForm from './components/PromptForm';
 import ResultCard from './components/ResultCard';
 import ImageCarousel from './components/ImageCarousel';
@@ -21,12 +22,8 @@ function App() {
     setPrompt('');
     
     try {
-      // Use local deterministic logic instead of backend call
       const generatedPrompt = buildPrompt(formula);
-      
-      // Simulate slight processing for UX
       await new Promise(resolve => setTimeout(resolve, 600));
-      
       setPrompt(generatedPrompt);
     } catch (error) {
       console.error('Error:', error);
@@ -39,21 +36,27 @@ function App() {
   return (
     <div className="app-wrapper">
       <Header />
-      <ImageCarousel direction="right" />
-      <ImageCarousel direction="left" />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <ImageCarousel direction="right" />
+        <ImageCarousel direction="left" />
+      </motion.div>
       <ScrollIndicator />
       
       <div className="hero-section" id="hero">
         <div className="hero-container">
-          <div className="hero-left">
+          <motion.div 
+            className="hero-left"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <h1 className="hero-title">
-              AI Image Generator: <br />
-              <span className="gradient-text">Online Text To Image</span>
+              Ad Creative & Marketing: <br />
+              <span className="gradient-text">Visuals Engine</span>
             </h1>
             <p className="hero-description">
-              Transform your ideas into AI images with the free text to image generator. 
-              Just describe what you want and watch the best AI image generator bring your ideas to life. 
-              Imaginator can create stunning images in seconds.
+              Stop wasting budget on standard visuals. Use our deterministic prompt engine to craft the perfect, high-converting product backdrops and ad creatives in seconds tailored entirely to your brand.
             </p>
 
             <div className="hero-stats">
@@ -72,18 +75,30 @@ function App() {
                 <span className="stat-label">Images Processed</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="hero-right">
+          <motion.div 
+            className="hero-right"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <div className="showcase-card">
               <img src="/carousel-images/img9.png" alt="AI Generated Astronaut" className="hero-showcase-img" />
               <div className="showcase-glow"></div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         <div className="hero-container2 workbench-section">
-          <div className="hero-left">
+          <motion.div 
+            className="hero-left"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="workbench-header">
               <span className="workbench-badge">AI Studio</span>
               <h2 className="workbench-title">Craft Your Masterpiece</h2>
@@ -97,15 +112,25 @@ function App() {
                 styles={styles}
               />
             </div>
-          </div>
-
-
+          </motion.div>
         </div>
       </div>
 
       <div className="container2">
         <main>
-          {error && <div className="glass-card error-container" style={{color: '#ef4444', marginTop: '1rem'}}>{error}</div>}
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="glass-card error-container" 
+                style={{color: '#ef4444', marginTop: '1rem'}}
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
           <ResultCard prompt={prompt} />
         </main>
       </div>

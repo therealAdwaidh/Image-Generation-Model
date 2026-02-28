@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Copy, CheckCircle, Image as ImageIcon, Download, AlertCircle } from 'lucide-react';
 
 export default function ResultCard({ prompt }) {
   const [copied, setCopied] = useState(false);
@@ -25,12 +27,9 @@ export default function ResultCard({ prompt }) {
     
     console.log("Generating image via server API");
 
-    // Start progress simulation
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 90) {
-          return 90; // Keep at 90 until loaded
-        }
+        if (prev >= 90) return 90;
         return prev + 5;
       });
     }, 500);
@@ -38,12 +37,8 @@ export default function ResultCard({ prompt }) {
     try {
       const response = await fetch('/api/image', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: prompt
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
       });
 
       clearInterval(progressInterval);
@@ -53,10 +48,7 @@ export default function ResultCard({ prompt }) {
         throw new Error(errorData.error || `Server error: ${response.status}`);
       }
 
-      // Get the image as a blob
       const blob = await response.blob();
-      
-      // Create a URL for the blob
       const url = URL.createObjectURL(blob);
       
       console.log("Image received successfully");
@@ -77,7 +69,6 @@ export default function ResultCard({ prompt }) {
     }
   };
 
-  // Clean up blob URL when component unmounts or when new image is generated
   useEffect(() => {
     return () => {
       if (image && image.startsWith('blob:')) {
@@ -89,66 +80,126 @@ export default function ResultCard({ prompt }) {
   if (!prompt) return null;
 
   return (
-    <div className="glass-card result-area" style={{ animation: 'fadeIn 0.5s ease-out' }}>
-      <div className="result-content">
-        {prompt}
-      </div>
-      <div className="action-buttons">
-        <button className="copy-btn" onClick={handleCopy}>
-          {copied ? (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Copied!
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Copy
-            </>
-          )}
-        </button>
-        <button className="visualize-btn" onClick={generateImage} disabled={loadingImage}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          Visualize
-        </button>
-      </div>
-
-      {loadingImage && (
-        <div className="progress-container">
-          <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-          <div className="progress-text">Generating... {progress}%</div>
-        </div>
-      )}
-
-      {error && (
-        <div className="error-message" style={{ color: '#ef4444', marginTop: '1rem', padding: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '0.5rem' }}>
-          {error}
-        </div>
-      )}
-
-      {(image && !loadingImage && !error) && (
-        <div className="generated-image-container">
-          <img 
-            src={image} 
-            alt="AI Generated" 
-            className="generated-image"
-          />
-          <div className="image-overlay">
-            <a 
-              href={image} 
-              download="imaginator-ai-image.png" 
-              className="download-btn"
+    <motion.div 
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
+      className="glass-card result-area"
+    >
+      <div className="result-container relative">
+        <motion.div 
+          className="result-content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="flex justify-between items-start mb-3 border-b border-gray-800 pb-2">
+            <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">Generated Prompt</span>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="copy-btn-subtle flex items-center gap-1 text-gray-400 hover:text-white transition-colors" 
+              onClick={handleCopy}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download Image
-            </a>
+              {copied ? (
+                <>
+                  <CheckCircle size={14} className="text-green-400" /> <span className="text-xs">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={14} /> <span className="text-xs">Copy</span>
+                </>
+              )}
+            </motion.button>
           </div>
-        </div>
-      )}
-    </div>
+          <div className="text-lg leading-relaxed text-gray-200">
+            {prompt}
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.button 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(168, 85, 247, 0.25)" }}
+        whileTap={{ scale: 0.98 }}
+        className="visualize-btn-large" 
+        onClick={generateImage} 
+        disabled={loadingImage}
+      >
+        <ImageIcon size={22} className="btn-icon" /> <span className="btn-text">Visualize</span>
+      </motion.button>
+
+      <AnimatePresence>
+        {loadingImage && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="progress-container"
+          >
+            <motion.div 
+              className="progress-bar" 
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: "linear" }}
+            />
+            <div className="progress-text">Generating... {progress}%</div>
+          </motion.div>
+        )}
+
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="error-message flex items-center gap-2" 
+            style={{ 
+              color: '#ff3d6e', 
+              marginTop: '1.5rem', 
+              padding: '1rem 1.25rem', 
+              background: 'rgba(255, 61, 110, 0.05)', 
+              border: '1px solid rgba(255, 61, 110, 0.3)',
+              borderRadius: '8px',
+              fontFamily: 'var(--font-mono)',
+              boxShadow: '0 0 15px rgba(255, 61, 110, 0.1) inset'
+            }}
+          >
+            <AlertCircle size={18} className="text-[#ff3d6e]" /> {error}
+          </motion.div>
+        )}
+
+        {(image && !loadingImage && !error) && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="generated-image-container group"
+          >
+            <img 
+              src={image} 
+              alt="AI Generated" 
+              className="generated-image transition-transform duration-500 group-hover:scale-105"
+            />
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+              className="image-overlay"
+            >
+              <motion.a 
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                href={image} 
+                download="imaginator-ai-image.png" 
+                className="download-btn"
+              >
+                <Download size={20} /> Download Image
+              </motion.a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

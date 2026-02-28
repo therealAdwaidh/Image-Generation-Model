@@ -1,12 +1,12 @@
 export const STYLES = [
-  { id: 'realistic', name: 'Realistic', fragment: 'photorealistic, 8k, highly detailed, cinematic lighting, ultra-realistic textures' },
-  { id: 'anime', name: 'Anime', fragment: 'anime style, cel shaded, vibrant colors, studio ghibli inspired, detailed background' },
-  { id: 'cyberpunk', name: 'Cyberpunk', fragment: 'cyberpunk aesthetic, neon lights, futuristic city, high tech, rain soaked streets, chromatic aberration' },
-  { id: 'oil-painting', name: 'Oil Painting', fragment: 'oil painting style, thick brushstrokes, textures, impasto, masterpiece, traditional art' },
-  { id: 'watercolor', name: 'Watercolor', fragment: 'watercolor painting, soft edges, bleeding colors, artistic, ethereal, paper texture' },
-  { id: 'fantasy', name: 'Fantasy', fragment: 'fantasy art, magical atmosphere, detailed, epic composition, glowing particles, digital painting' },
-  { id: 'sketch', name: 'Sketch', fragment: 'pencil sketch, graphite, rough lines, artistic, monochrome, detailed shading' },
-  { id: '3d-render', name: '3D Render', fragment: '3d render, unreal engine 5, octane render, ray tracing, volumetric lighting, subsurface scattering' }
+  { id: 'minimalist', name: 'Minimalist Product', fragment: 'clean minimalist background, studio lighting, product photography, high-end commercial style, soft shadows, 8k' },
+  { id: 'lifestyle', name: 'Instagram Lifestyle', fragment: 'lifestyle photography, natural sunlight, depth of field, vibrant colors, modern aesthetic, social media influencer style' },
+  { id: 'neon-pop', name: 'Neon Pop Art', fragment: 'bold neon colors, high contrast, pop art style, energetic, youth marketing, dynamic lighting' },
+  { id: 'corporate', name: 'Corporate Flat', fragment: 'corporate flat illustration style, vector art, clean lines, professional, trusting colors, business presentation' },
+  { id: 'cyber-tech', name: 'Tech / Cyber', fragment: 'futuristic tech background, glowing blue nodes, dark mode aesthetic, cybersecurity, modern SaaS layout' },
+  { id: 'vintage', name: 'Vintage Nostalgia', fragment: 'retro vintage aesthetic, 1970s film grain, nostalgic colors, warm amber lighting, classic advertisement style' },
+  { id: 'luxury', name: 'Luxury Premium', fragment: 'luxury mood, dark sleek background, subtle gold accents, high-end brand, sophisticated, professional studio photography' },
+  { id: 'editorial', name: 'Fashion Editorial', fragment: 'vogue magazine editorial style, dramatic lighting, high fashion, sharp focus, professional color grading' }
 ];
 
 export const buildPrompt = (formula) => {

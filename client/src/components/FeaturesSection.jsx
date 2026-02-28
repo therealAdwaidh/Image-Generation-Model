@@ -1,60 +1,113 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
 
 const FeaturesSection = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.3 } 
+    }
+  };
+
+  const rowVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: "easeOut" } 
+    }
+  };
+
   return (
     <section className="features-grid-section">
-      <div className="features-grid-container">
+      <motion.div 
+        className="features-grid-container"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+      >
         
         {/* Feature 1 */}
-        <div className="feature-row">
-          <div className="feature-image-side">
-            <div className="feature-image-wrapper">
-              <img src="/carousel-images/img4.png" alt="Multiple AI Models" className="feature-img" />
+        <motion.div variants={rowVariants} className="feature-row">
+          <div className="feature-image-side" style={{ position: 'relative' }}>
+            <div className="feature-image-wrapper" style={{ overflow: 'hidden' }}>
+              <img src="/carousel-images/img6.png" alt="Multiple AI Models" className="feature-img" style={{ transition: 'transform 0.7s ease' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
               <div className="prompt-overlay">
-                <div className="prompt-pill">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="prompt-pill"
+                  style={{ boxShadow: '0 0 30px rgba(16, 185, 129,0.3)' }}
+                >
                   <span className="prompt-text">Astro...</span>
-                  <button className="prompt-gen-btn">
-                    <span className="plus-icon">+</span> Generate
+                  <button className="prompt-gen-btn" style={{ background: 'linear-gradient(to right, #10b981, #06b6d4)', display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer', color: 'white' }}>
+                    <Sparkles size={14} /> Generate
                   </button>
-                </div>
+                </motion.div>
               </div>
             </div>
           </div>
           <div className="feature-text-side">
-            <h2 className="feature-heading">Multiple AI Models At Your Fingertips</h2>
+            <h2 className="feature-heading">Brand-Aligned Visuals At Scale</h2>
             <p className="feature-desc">
-              Our AI image generator gives you access to a wide range of cutting-edge models like Flux, Flux Dev, Imagen 3, and many more. Whether you're aiming for artistic, hyper-realistic, or experimental results, you can choose the model that best fits your vision. Having multiple options ensures that your AI-generated images match your creative style perfectly.
+              Our deterministic prompt engine gives you the power to generate endless variations of high-converting product shots and marketing materials. Whether you're aiming for minimalist compositions, modern lifestyle settings, or bold neon aesthetics, you can choose the style that resonates with your brand identity.
             </p>
-            <button className="feature-btn">
-              Generate Now <span className="arrow">↗</span>
-            </button>
+            <motion.button 
+              whileHover={{ scale: 1.05, x: 10 }}
+              whileTap={{ scale: 0.95 }}
+              className="feature-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+            >
+              Generate Now <ArrowUpRight size={18} />
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Feature 2 */}
-        <div className="feature-row reverse">
+        <motion.div variants={rowVariants} className="feature-row reverse">
           <div className="feature-text-side">
-            <h2 className="feature-heading">Generate Images Using A Reference</h2>
+            <h2 className="feature-heading">Accelerate Your Creative Workflow</h2>
             <p className="feature-desc">
-              With our AI photo generator, you can upload a reference image to guide your creation. Whether it's for capturing a specific pose, color palette, or visual structure, the AI intelligently interprets your reference to deliver accurate and enhanced results. It's a great way to fine-tune the outcome while still enjoying the freedom of creative input.
+              Stop spending hours writing and tweaking prompts. By utilizing our structured prompt builder, you define your product, setting, and mood, while our engine constructs the perfect studio-grade prompt behind the scenes. It's the most efficient way to scale your ad creatives.
             </p>
-            <button className="feature-btn">
-              Inspire With Image <span className="arrow">↗</span>
-            </button>
+            <motion.button 
+              whileHover={{ scale: 1.05, x: 10 }}
+              whileTap={{ scale: 0.95 }}
+              className="feature-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+            >
+              Inspire With Image <ArrowUpRight size={18} />
+            </motion.button>
           </div>
-          <div className="feature-image-side">
-            <div className="feature-image-wrapper">
-              <img src="/carousel-images/img6.png" alt="Reference Image Generation" className="feature-img" />
+          <div className="feature-image-side" style={{ position: 'relative' }}>
+            <div className="feature-image-wrapper" style={{ overflow: 'hidden' }}>
+              <img src="/carousel-images/img5.png" alt="Reference Image Generation" className="feature-img" style={{ transition: 'transform 0.7s ease' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
               <div className="prompt-overlay bottom">
-                <div className="prompt-bar-simple">
-                  <span className="prompt-char">A</span>
-                </div>
+                <motion.div 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "100%" }}
+                  transition={{ duration: 1, delay: 0.5 }}
+                  viewport={{ once: true }}
+                  className="prompt-bar-simple"
+                  style={{ overflow: 'hidden', whiteSpace: 'nowrap', boxShadow: '0 0 30px rgba(6, 182, 212,0.2)' }}
+                >
+                  <motion.span 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1 }}
+                    className="prompt-char"
+                  >
+                    A universe and a being...
+                  </motion.span>
+                </motion.div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 };
