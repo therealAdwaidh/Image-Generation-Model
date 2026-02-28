@@ -35,7 +35,8 @@ export default function ResultCard({ prompt }) {
     }, 500);
 
     try {
-      const response = await fetch('/api/image', {
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiUrl}/api/image`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: prompt })
