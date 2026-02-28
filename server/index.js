@@ -103,7 +103,7 @@ app.post('/api/image', async (req, res) => {
       return res.status(500).json({ error: 'API key not configured. Please add OPENROUTER_API_KEY to your .env file.' });
     }
 
-    console.log(`Generating image for prompt with OpenRouter (seedream-4.5): "${prompt.substring(0, 50)}..."`);
+    console.log(`Generating image for prompt with OpenRouter (flux.2-klein-4b): "${prompt.substring(0, 50)}..."`);
 
     // Fetch image from OpenRouter
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -113,15 +113,13 @@ app.post('/api/image', async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "bytedance-seed/seedream-4.5",
+        model: "black-forest-labs/flux.2-klein-4b",
         messages: [
           {
             role: "user",
             content: prompt
           }
-        ],
-        // OpenRouter specific parameter for image generation
-        // Although the model might only output images, it's safer to include modalities if expected
+        ]
       })
     });
 
