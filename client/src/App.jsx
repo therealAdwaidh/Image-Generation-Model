@@ -43,7 +43,7 @@ function App() {
       <ImageCarousel direction="left" />
       <ScrollIndicator />
       
-      <div className="hero-section">
+      <div className="hero-section" id="hero">
         <div className="hero-container">
           <div className="hero-left">
             <h1 className="hero-title">
@@ -82,9 +82,13 @@ function App() {
           </div>
         </div>
 
-        <div className="hero-container2">
+        <div className="hero-container2 workbench-section">
           <div className="hero-left">
-            
+            <div className="workbench-header">
+              <span className="workbench-badge">AI Studio</span>
+              <h2 className="workbench-title">Craft Your Masterpiece</h2>
+              <p className="workbench-subtitle">Configure your generation parameters with precision.</p>
+            </div>
 
             <div className="hero-form-wrapper">
               <PromptForm 
@@ -92,15 +96,10 @@ function App() {
                 isLoading={isLoading} 
                 styles={styles}
               />
-            
             </div>
-
-            
           </div>
 
-          <div className="hero-right">
-            
-          </div>
+
         </div>
       </div>
 

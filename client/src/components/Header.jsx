@@ -1,6 +1,25 @@
 import React from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
+  const { currentUser, googleSignIn, logout } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.error("Failed to sign in", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Failed to log out", error);
+    }
+  };
+
   return (
     <header className="main-header">
       <div className="header-container">
@@ -23,8 +42,22 @@ const Header = () => {
         </nav>
         
         <div className="header-actions">
-          
-          <button className="signup-btn">Get Started</button>
+          {!currentUser ? (
+            <button className="signup-btn" onClick={handleSignIn}>
+              Sign In
+            </button>
+          ) : (
+            <div className="user-menu" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {currentUser.photoURL && (
+                <img 
+                  src={currentUser.photoURL} 
+                  alt="User" 
+                  style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid #3b82f6' }}
+                />
+              )}
+              <button className="login-btn" onClick={handleSignOut}>Sign Out</button>
+            </div>
+          )}
         </div>
       </div>
     </header>

@@ -1,8 +1,15 @@
 import React from 'react';
 
 const ScrollIndicator = () => {
+  const scrollToHero = () => {
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+      heroSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="scroll-indicator">
+    <div className="scroll-indicator" onClick={scrollToHero} style={{ cursor: 'pointer' }}>
       <div className="mouse">
         <div className="wheel"></div>
       </div>

@@ -66,8 +66,16 @@ app.post('/api/image', async (req, res) => {
     const randomSeed = Math.floor(Math.random() * 1000);
     const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${randomSeed}`;
 
-    const response = await fetch(imageUrl);
-    if (!response.ok) throw new Error('Pollinations API error');
+    const headers = {};
+    if (process.env.POLLINATIONS_API_KEY) {
+      headers['Authorization'] = `Bearer ${process.env.POLLINATIONS_API_KEY}`;
+    }
+
+    const response = await fetch(imageUrl, { headers });
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      throw new Error(`Pollinations API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
 
     const imageBuffer = await response.arrayBuffer();
     res.set({
@@ -76,7 +84,8 @@ app.post('/api/image', async (req, res) => {
     });
     res.send(Buffer.from(imageBuffer));
   } catch (error) {
-    res.status(500).json({ error: 'Failed to generate image' });
+    console.error("Error fetching image:", error);
+    res.status(500).json({ error: 'Failed to generate image', details: error.message });
   }
 });
 

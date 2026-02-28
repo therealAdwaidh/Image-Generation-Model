@@ -78,7 +78,6 @@ export default function PromptForm({ onGenerate, isLoading, styles }) {
               onChange={(e) => handleChange('subject', e.target.value)}
               placeholder="e.g. a majestic dragon, a futuristic cityscape"
               disabled={isLoading}
-              autoFocus
             />
             {errors.subject && <div className="error-msg">{errors.subject}</div>}
           </div>
